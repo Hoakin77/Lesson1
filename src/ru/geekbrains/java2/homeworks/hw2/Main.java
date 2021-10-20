@@ -28,12 +28,25 @@ public class Main {
             if (strings.length != 4) {
                 throw new MyArraySizeException();
             }
-            for (String string : strings) {
-                try {
-                    count = count + Integer.parseInt(string);
-                } catch (NumberFormatException e) {
-                    throw new MyArrayDataException();
-                }
+            try {
+                count = count + Integer.parseInt(strings[0]);
+            } catch (NumberFormatException e) {
+                throw new MyArrayDataException();
+            }
+            try {
+                count = count + Integer.parseInt(strings[1]);
+            } catch (NumberFormatException e) {
+                throw new MyArrayDataException();
+            }
+            try {
+                count = count + Integer.parseInt(strings[2]);
+            } catch (NumberFormatException e) {
+                throw new MyArrayDataException();
+            }
+            try {
+                count = count + Integer.parseInt(strings[3]);
+            } catch (NumberFormatException e) {
+                throw new MyArrayDataException();
             }
 
         }
