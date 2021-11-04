@@ -1,11 +1,15 @@
 package ru.geekbrains.java2.homeworks.hw3;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-public interface PhoneBook {
-    void add(String surname, String phoneNumber);
+public class PhoneBook {
+    private Map<String, Set<String>> book = new HashMap<>();
 
-    Set<String> get(String surname);
+    public void add(String name, String number){
+        book.getOrDefault(name, new HashSet<>()).add(number);
+    }
 
-    Set<String> getAllSurnames();
 }
