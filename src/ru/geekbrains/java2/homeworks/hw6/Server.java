@@ -22,8 +22,8 @@ import java.net.*;
 
 public class Server {
     public static void main(String[] args) {
-        ServerSocket server = null;
-        Socket socket = null;
+        ServerSocket server;
+        Socket socket = new Socket();
 
         //start server
         try {
@@ -40,9 +40,7 @@ public class Server {
             e.printStackTrace();
         } finally {
             try {
-                assert socket != null;
                 socket.close();
-                server.close();
                 System.out.println("Server closed");
             } catch (IOException e) {
                 e.printStackTrace();
