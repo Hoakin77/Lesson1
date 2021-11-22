@@ -1,5 +1,7 @@
 package ru.geekbrains.java2.lessons.lesson7;
 
+import ru.geekbrains.lessons.test.User;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

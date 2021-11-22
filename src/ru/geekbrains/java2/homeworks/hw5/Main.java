@@ -26,7 +26,7 @@ import java.util.Arrays;
 //         *          System.arraycopy(arr, h, a2, 0, h);
 //         *          Пример обратной склейки:
 //         *          System.arraycopy(a1, 0, arr, 0, h);
-//         *          System.arraycopy(a2, 0, arr, q,h);
+//         *          System.arraycopy(a2, 0, arr, q, h);
 //         *          По замерам времени:
 //         *          Для первого метода надо считать время только на цикл расчета:
 //         *          for (int i = 0; i < size; i++) {
@@ -36,49 +36,44 @@ import java.util.Arrays;
 public class Main {
     private static final int SIZE = 10000000;
     private static final int HALF_SIZE = SIZE / 2;
+    private float []arr = new float[SIZE];
 
-    public float[] calculate(float[] arr) {
+    private void doCalc(){
+        long start = System.currentTimeMillis();
+        Arrays.fill(arr, 1);
+
+        float[] a1 = new float[HALF_SIZE];
+        float[] a2 = new float[HALF_SIZE];
+
+        System.arraycopy(arr, 0,a1,0,HALF_SIZE);
+        System.arraycopy(arr, HALF_SIZE,a2,0,HALF_SIZE);
+
+        Thread t0 = new Thread(()-> doCalc(a1));
+        Thread t1 = new Thread(()-> doCalc(a2));
+
+        t0.start();
+        t1.start();
+
+        try {
+            t0.join();
+            t1.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.arraycopy(a1,0,arr,0, HALF_SIZE);
+        System.arraycopy(a2,0,arr, HALF_SIZE, HALF_SIZE);
+
+        long end = System.currentTimeMillis() - start;
+        System.out.println("Operation took: " + end);
+    }
+
+    private void doCalc(float[] arr) {
         for (int i = 0; i < arr.length; i++)
             arr[i] = (float) (arr[i] * Math.sin(0.2f + arr[i] / 5) * Math.cos(0.2f + arr[i] / 5) * Math.cos(0.4f + arr[i] / 2));
-        return arr;
     }
 
-    public void runOneThread() {
-        float[] arr = new float[SIZE];
-        Arrays.fill(arr, 1.0f);
-        long a = System.currentTimeMillis();
-        calculate(arr);
-        System.out.println("One thread method ends with: " + (System.currentTimeMillis() - a));
-    }
-
-    public void runTwoThreads() {
-        float[] arr = new float[SIZE];
-        float[] arr1 = new float[HALF_SIZE];
-        float[] arr2 = new float[HALF_SIZE];
-        Arrays.fill(arr, 1.0f);
-
-        long a = System.currentTimeMillis();
-        System.arraycopy(arr, 0, arr1, 0, HALF_SIZE);
-        System.arraycopy(arr, HALF_SIZE, arr2, 0, HALF_SIZE);
-
-        new Thread(() -> {
-            float[] a1 = calculate(arr1);
-            System.arraycopy(a1, 0, arr1, 0, a1.length);
-        }).start();
-
-        new Thread(() -> {
-            float[] a2 = calculate(arr2);
-            System.arraycopy(a2, 0, arr2, 0, a2.length);
-        }).start();
-
-        System.arraycopy(arr1, 0, arr, 0, HALF_SIZE);
-        System.arraycopy(arr2, 0, arr, HALF_SIZE, HALF_SIZE);
-        System.out.println("Two threads ends with: " + (System.currentTimeMillis() - a));
-    }
-
-    public static void main(String... s) {
-        Main o = new Main();
-        o.runOneThread();
-        o.runTwoThreads();
+    public static void main(String[] args) {
+        new Main().doCalc();
     }
 }
